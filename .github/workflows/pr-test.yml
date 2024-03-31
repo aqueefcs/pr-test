@@ -60,11 +60,10 @@ jobs:
 
   azureProvision:
     needs: ["branch_check_and_create"]
-    runs-on: [self-hosted, linux, azure-ephemeral, "${{ github.run_id }}"]
+    runs-on: ubuntu-latest
     env:
       PAYLOAD: ${{toJSON(github.event.client_payload)}}
       TASK_ID: ${{toJSON(github.event.client_payload.task_details.sysid)}}
-      ARM_USE_MSI: true
 
     steps:
       - name: Checkout Branch
