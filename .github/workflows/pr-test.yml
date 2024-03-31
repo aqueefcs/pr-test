@@ -116,17 +116,17 @@ jobs:
       - name: Create Pull Request
         id: create_pr
         if: steps.check_pr.outputs.prexist == 'false'
-        run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} Terraform Plan Successful" --body "Terraform Plan Successful" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
+        run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} PR Test" --body "PR TEST - Update COmment in PR" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
-      - name: Get Pull Request Number
-        id: get_pr_number
-        if: steps.create_pr.outcome == 'success'
-        run: |
-          echo "pr_number=$(gh api "repos/${{ github.event.repository.full_name }}/commits/${{ github.event.after }}/pulls" --jq '.[].number')" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      #   - name: Get Pull Request Number
+      #     id: get_pr_number
+      #     if: steps.create_pr.outcome == 'success'
+      #     run: |
+      #       echo "pr_number=$(gh api "repos/${{ github.event.repository.full_name }}/commits/${{ github.event.after }}/pulls" --jq '.[].number')" >> $GITHUB_OUTPUT
+      #     env:
+      #       GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Update Pull Request Comment
         if: steps.check_pr.outputs.prexist == 'true' || steps.create_pr.outcome == 'success'
@@ -134,11 +134,10 @@ jobs:
         with:
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
           script: |
-            echo ${{ steps.get_pr_number.outputs.pr_number }}
             const newComment = 'New comment to append to the PR.';
             github.rest.issues.createComment({
+                issue_number: 7,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: ${{ steps.get_pr_number.outputs.pr_number }},
                 body: newComment
             });
