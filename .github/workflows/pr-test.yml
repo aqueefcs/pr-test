@@ -38,11 +38,3 @@ jobs:
     #         EXIT_CODE="false"
     #         echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
     #       fi
-
-    #   - name: Create Branch
-    #     if: steps.check_branch.outputs.exitcode == 'false'
-    #     run: |
-    #       echo ${{steps.check_branch.outputs.branch_name}}
-    #       git remote set-url origin "https://${{ env.access_token }}@github.com/${{ github.repository }}"
-    #       git push origin HEAD:refs/heads/${{ steps.check_branch.outputs.branch_name }}
-    #       echo "Branch ${{ steps.check_branch.outputs.branch_name }} created"
