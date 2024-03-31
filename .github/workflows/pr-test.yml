@@ -125,6 +125,7 @@ jobs:
         run: |
           pr_url="https://api.github.com/repos/${{ github.repository }}/pulls\?head\=${{ github.actor }}:${{ needs.branch_check_and_create.outputs.branch-name }}"
           pr_number=$(echo $pr_url | awk -F'/' '{print $NF}')
+          echo $pr_number
           echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
 
       - name: Update Pull Request Comment
@@ -135,8 +136,8 @@ jobs:
           script: |
             const newComment = 'New comment to append to the PR.';
             github.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: ${{ steps.get_pr_number.outputs.pr_number }},
-            body: newComment
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: ${{ steps.get_pr_number.outputs.pr_number }},
+                body: newComment
             });
