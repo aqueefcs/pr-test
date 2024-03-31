@@ -134,7 +134,7 @@ jobs:
           echo ${{ steps.check_pr.outputs.pr_exist }}
 
       - name: Update Pull Request Comment
-        if: steps.check_pr.outputs.prexist != ''
+        if: steps.check_pr.outputs.pr_exist != ''
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
