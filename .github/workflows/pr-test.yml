@@ -133,7 +133,6 @@ jobs:
         with:
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
           script: |
-            const { context, github } = require('@actions/github');
             const newComment = 'New comment to append to the PR.';
             github.issues.createComment({
             owner: context.repo.owner,
