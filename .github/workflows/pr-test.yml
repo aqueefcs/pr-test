@@ -24,18 +24,24 @@ jobs:
         with:
           token: ${{ secrets.GH_ACCESS_TOKEN }}
 
-    #   - name: Check if branch exists
-    #     id: check_branch
-    #     run: |
-    #       BRANCH_NAME="${{ toJSON(github.event.client_payload.ritm_details.number) }}"
-    #       echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+      - name: Setup Git Configuration
+        id: setupgit
+        run: |
+          git config --global user.name aqueefcs
+          git config --global user.email aqueefalimansari007@gmail.com
 
-    #       if git ls-remote --exit-code --heads origin $BRANCH_NAME > /dev/null 2>&1; then
-    #         echo "Branch exist"
-    #         EXIT_CODE="true"
-    #         echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
-    #       else
-    #         echo "Branch not exist"
-    #         EXIT_CODE="false"
-    #         echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
-    #       fi
+      - name: Check if branch exists
+        id: check_branch
+        run: |
+          BRANCH_NAME="${{ toJSON(github.event.client_payload.ritm_details.number) }}"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+          if git ls-remote --exit-code --heads origin $BRANCH_NAME > /dev/null 2>&1; then
+            echo "Branch exist"
+            EXIT_CODE="true"
+            echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
+          else
+            echo "Branch not exist"
+            EXIT_CODE="false"
+            echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
+          fi
