@@ -105,12 +105,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
-      #   - name: Create Pull Request
-      #     id: create_pr
-      #     if: steps.check_pr.outputs.prexist == 'false'
-      #     run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} PR Test" --body "PR TEST - Update Comment in PR" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
-      #     env:
-      #       GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Create Pull Request
+        id: create_pr
+        if: steps.check_pr.outputs.pr_exist == ''
+        run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} PR Test" --body "PR TEST - Update Comment in PR" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Get Pull Request Number
         id: get_pr_number
