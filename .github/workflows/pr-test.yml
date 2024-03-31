@@ -1,0 +1,48 @@
+name: PR TEST - Technical Review
+on:
+  repository_dispatch:
+    types: prtestautomation
+
+run-name: PR TEST - ${{ toJSON(github.event.client_payload.ritm_details.number) }}
+
+#Special Pemissions required for OIDC authentication
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  branch_check_and_create:
+    runs-on: ubuntu-latest
+    env:
+      PAYLOAD: ${{toJSON(github.event.client_payload)}}
+      TASK_ID: ${{toJSON(github.event.client_payload.task_details.sysid)}}
+      ARM_USE_MSI: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+    #   - name: Check if branch exists
+    #     id: check_branch
+    #     run: |
+    #       BRANCH_NAME="${{ toJSON(github.event.client_payload.ritm_details.number) }}"
+    #       echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+    #       if git ls-remote --exit-code --heads origin $BRANCH_NAME > /dev/null 2>&1; then
+    #         echo "Branch exist"
+    #         EXIT_CODE="true"
+    #         echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
+    #       else
+    #         echo "Branch not exist"
+    #         EXIT_CODE="false"
+    #         echo "exitcode=$EXIT_CODE" >> $GITHUB_OUTPUT
+    #       fi
+
+    #   - name: Create Branch
+    #     if: steps.check_branch.outputs.exitcode == 'false'
+    #     run: |
+    #       echo ${{steps.check_branch.outputs.branch_name}}
+    #       git remote set-url origin "https://${{ env.access_token }}@github.com/${{ github.repository }}"
+    #       git push origin HEAD:refs/heads/${{ steps.check_branch.outputs.branch_name }}
+    #       echo "Branch ${{ steps.check_branch.outputs.branch_name }} created"
