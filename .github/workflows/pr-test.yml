@@ -53,3 +53,52 @@ jobs:
           git remote set-url origin "https://${{ secrets.GH_ACCESS_TOKEN }}@github.com/${{ github.repository }}"
           git push origin HEAD:refs/heads/${{ steps.check_branch.outputs.branch_name }}
           echo "Branch ${{ steps.check_branch.outputs.branch_name }} created"
+
+    outputs:
+      exit-code: ${{ steps.check_branch.outputs.exitcode }}
+      branch-name: ${{ steps.check_branch.outputs.branch_name }}
+
+  azureProvision:
+    needs: ["branch_check_and_create"]
+    runs-on: [self-hosted, linux, azure-ephemeral, "${{ github.run_id }}"]
+    env:
+      PAYLOAD: ${{toJSON(github.event.client_payload)}}
+      TASK_ID: ${{toJSON(github.event.client_payload.task_details.sysid)}}
+      ARM_USE_MSI: true
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.branch_check_and_create.outputs.branch-name }}
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+        # Running Nodejs code to generate terraform files for azure resources
+      - name: Run Nodejs Script
+        run: |
+          npm install
+          node index.js
+
+      - name: Setup Git Configuration
+        id: setupgit
+        run: |
+          git config --global user.name aqueefcs
+          git config --global user.email aqueefalimansari007@gmail.com
+
+      - name: Push to Branch
+        run: |
+          echo ${{ needs.branch_check_and_create.outputs.branch-name }}
+          git remote set-url origin "https://${{ secrets.GH_ACCESS_TOKEN }}@github.com/${{ github.repository }}"
+          git add .
+          git commit -m "pr-test-automation"
+          git push origin HEAD:refs/heads/${{ needs.branch_check_and_create.outputs.branch-name }}
+          echo "Pushed to Branch ${{ needs.branch_check_and_create.outputs.branch-name }}"
+
+      - name: Create Pull Request
+        run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} Terraform Plan Successful" --body "Terraform Plan Successful" --base "master" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
