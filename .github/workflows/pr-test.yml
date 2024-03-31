@@ -100,10 +100,11 @@ jobs:
 
       - name: Check if PR already exists
         id: check_pr
+        run: |
+          gh api "repos/${{ github.actor }}/${{ github.repository }}/pulls" --jq '.[].number'
+          echo "pr_exist=$(gh api "repos/${{ github.actor }}/${{ github.repository }}/pulls" --jq '.[].number')" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
-        run: |
-          echo "pr_exist=$(gh api "repos/${{ github.actor }}/${{ github.repository }}/pulls" --jq '.[].number')" >> $GITHUB_OUTPUT
         #   pr_exists=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/${{ github.repository }}/pulls\?head\=${{ github.actor }}:${{ needs.branch_check_and_create.outputs.branch-name }})
 
       #   - name: Create Pull Request
