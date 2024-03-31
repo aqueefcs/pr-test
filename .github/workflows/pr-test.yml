@@ -79,6 +79,8 @@ jobs:
         # Running Nodejs code to generate terraform files for azure resources
       - name: Run Nodejs Script
         run: |
+          cd ./Code-Generation
+          npm install
           node index.js
 
       - name: Setup Git Configuration
