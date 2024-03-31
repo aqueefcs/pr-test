@@ -99,7 +99,7 @@ jobs:
           echo ${{ steps.diff.outputs.has_changes }}
 
       - name: Push to Branch
-        if: steps.diff.outputs.has_changes != 'true'
+        if: steps.diff.outputs.has_changes == 'true'
         run: |
           echo ${{ needs.branch_check_and_create.outputs.branch-name }}
           git remote set-url origin "https://${{ secrets.GH_ACCESS_TOKEN }}@github.com/${{ github.repository }}"
