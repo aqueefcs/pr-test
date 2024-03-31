@@ -125,6 +125,8 @@ jobs:
         if: steps.create_pr.outcome == 'success'
         run: |
           echo "pr_number=$(gh api "repos/${{ github.event.repository.full_name }}/commits/${{ github.event.after }}/pulls" --jq '.[].number')" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
       - name: Update Pull Request Comment
         if: steps.check_pr.outputs.prexist == 'true' || steps.create_pr.outcome == 'success'
