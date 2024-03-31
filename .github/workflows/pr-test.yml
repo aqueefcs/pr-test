@@ -99,6 +99,6 @@ jobs:
           echo "Pushed to Branch ${{ needs.branch_check_and_create.outputs.branch-name }}"
 
       - name: Create Pull Request
-        run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} Terraform Plan Successful" --body "Terraform Plan Successful" --base "master" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
+        run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} Terraform Plan Successful" --body "Terraform Plan Successful" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
