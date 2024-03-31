@@ -102,10 +102,42 @@ jobs:
         id: check_pr
         run: |
           pr_exists=$(curl -s -o /dev/null -w "%{http_code}" https://api.github.com/repos/${{ github.repository }}/pulls\?head\=${{ github.actor }}:${{ needs.branch_check_and_create.outputs.branch-name }})
-          echo $pr_exists
-          echo "pr_exists=$pr_exists" >> $GITHUB_OUTPUT;
+          if $pr_exists == 200; then
+            echo "PR exist"
+            PR_EXIST="true"
+            echo "prexist=$PR_EXIST" >> $GITHUB_OUTPUT
+          else
+            echo "PR not exist"
+            PR_EXIST="false"
+            echo "prexist=$PR_EXIST" >> $GITHUB_OUTPUT
+          fi
 
       - name: Create Pull Request
+        id: create_pr
+        if: steps.check_pr.outputs.prexist == 'false'
         run: gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} Terraform Plan Successful" --body "Terraform Plan Successful" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Get Pull Request Number
+        id: get_pr_number
+        if: steps.create_pr.outcome == 'success'
+        run: |
+          pr_url="https://api.github.com/repos/${{ github.repository }}/pulls\?head\=${{ github.actor }}:${{ needs.branch_check_and_create.outputs.branch-name }}"
+          pr_number=$(echo $pr_url | awk -F'/' '{print $NF}')
+          echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
+
+      - name: Update Pull Request Comment
+        if: steps.check_pr.outputs.prexist == 'true' || steps.create_pr.outcome == 'success'
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
+          script: |
+            const { context, github } = require('@actions/github');
+            const newComment = 'New comment to append to the PR.';
+            github.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: ${{ steps.get_pr_number.outputs.pr_number }},
+            body: newComment
+            });
