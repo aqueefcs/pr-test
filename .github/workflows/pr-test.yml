@@ -17,11 +17,12 @@ jobs:
     env:
       PAYLOAD: ${{toJSON(github.event.client_payload)}}
       TASK_ID: ${{toJSON(github.event.client_payload.task_details.sysid)}}
-      ARM_USE_MSI: true
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
 
     #   - name: Check if branch exists
     #     id: check_branch
