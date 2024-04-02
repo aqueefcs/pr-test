@@ -193,7 +193,7 @@ jobs:
         id: set-after-pr-num
         run: |
           afterprnumoutput="${{ env.pr_number }}"
-          echo "AFTERPRNUMOUTPUT<<EOF >> $GITHUB_OUTPUT
+          echo "AFTERPRNUMOUTPUT<<EOF" >> $GITHUB_OUTPUT
           echo "$afterprnumoutput" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
