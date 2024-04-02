@@ -201,7 +201,7 @@ jobs:
         run: echo ${{ env.AFTERPRNUMOUTPUT }}
 
       - name: Update Pull Request Comment
-        if: steps.set-after-pr-num.outcome == 'success'
+        if: steps.get_pr_num.outcome == 'success'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
