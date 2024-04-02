@@ -5,7 +5,7 @@ const pr_array = JSON.parse(process.env.PR_ARRAY);
 
 for (item of pr_array) {
   if (item.head.ref == `${branch}`) {
-    console.log(item.head.ref);
+    console.log(item.number);
   } else {
     console.log(false);
   }
