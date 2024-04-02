@@ -115,12 +115,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
+      # - name: Get Pr List Length
+      #   id: pr-length
+      #   run: |
+      #     pr_list=${{ steps.check_pr.outputs.pr_exist }}
+      #     echo ${#pr_array[@]}
+      #     echo "pr_length=${#pr_list[@]}" >> $GITHUB_OUTPUT
+
       - name: Get Pr List Length
         id: pr-length
-        run: |
-          pr_list=${{ steps.check_pr.outputs.pr_exist }}
-          echo ${#pr_array[@]}
-          echo "pr_length=${#pr_list[@]}" >> $GITHUB_OUTPUT
+        uses: ./Code-Generation/actions/get-pr-list-length
+        with:
+          pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
       # - name: get PR num
       #   id: get_pr
@@ -138,7 +144,7 @@ jobs:
 
       - name: print pr length
         run: |
-          echo ${{ steps.pr-length.outputs.pr_length }}
+          echo ${{ env.pr_list_length }}
 
       - name: get PR num
         id: get_pr
