@@ -122,6 +122,9 @@ jobs:
         with:
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
+      - name: print PR length
+        run: echo ${{ env.pr_list_length }}
+
       # - name: get PR num
       #   id: get_pr
       #   run: |
