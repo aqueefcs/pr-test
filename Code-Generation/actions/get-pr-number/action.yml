@@ -1,5 +1,14 @@
 name: Get PR Number
 description: "Get PR Number"
+
+inputs:
+  branch_name:
+    description: "Branch Name"
+    required: true
+  pr_array:
+    description: "List of PRs"
+    required: true
+
 runs:
   using: composite
 
@@ -7,6 +16,9 @@ runs:
   steps:
     - id: pr-num
       shell: bash
+      env:
+        BRANCH: ${{ inputs.branch_name }}
+        PR_ARRAY: ${{ inputs.pr_array }}
       run: |
         node get_pr_number.js
       working-directory: "${{ github.action_path }}"

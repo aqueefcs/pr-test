@@ -131,10 +131,10 @@ jobs:
 
       - name: get PR num
         id: get_pr
-        env:
+        uses: ./Code-Generation/actions/get-pr-number
+        with:
           branch: ${{ needs.branch_check_and_create.outputs.branch-name }}
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
-        uses: ./Code-Generation/actions/get-pr-number
 
       - name: print pr
         run: |
