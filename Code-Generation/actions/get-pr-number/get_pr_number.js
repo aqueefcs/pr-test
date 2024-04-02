@@ -7,6 +7,6 @@ for (item of pr_array) {
   if (item.head.ref == `${branch}`) {
     console.log(item.number);
   } else {
-    console.log(false);
+    console.log("false");
   }
 }
