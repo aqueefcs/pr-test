@@ -9,7 +9,8 @@ console.log(`Branch: ${branch}`);
 // console.log(`PR array: ${pr_array}`);
 
 for (item of pr_array) {
-  if (item.head.ref == branch) {
+  console.log(item.head.ref);
+  if (item.head.ref == `${branch}`) {
     console.log(item.head.ref);
     core.setOutput("PR_NUMBER", item.number);
   } else {
