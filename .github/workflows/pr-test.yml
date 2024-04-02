@@ -118,7 +118,7 @@ jobs:
       - name: Get Pr List Length
         id: pr-length
         run: |
-          pr_list = ${{ steps.check_pr.outputs.pr_exist }}
+          pr_list=${{ steps.check_pr.outputs.pr_exist }}
           echo ${#pr_array[@]}
           echo "pr_length=${#pr_list[@]}" >> $GITHUB_OUTPUT
 
