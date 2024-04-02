@@ -16,5 +16,5 @@ runs:
       env:
         PR_ARRAY: ${{ inputs.pr_array }}
       run: |
-        echo "pr_list_length=$(node get_length.js)" >> $GITHUB_OUTPUT
+        echo "pr_list_length=$(node get_length.js)" >> $GITHUB_ENV
       working-directory: "${{ github.action_path }}"

@@ -122,7 +122,7 @@ jobs:
         with:
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
-      - name: set pr length o output
+      - name: set pr length output
         id: set-pr-len
         run: |
           prlen="${{ env.pr_list_length }}"
@@ -147,15 +147,24 @@ jobs:
 
       - name: Check if Any PR for Checkout Branch
         id: pr_num
-        if: ${{ env.pr_list_length }} == 'true'
+        if: steps.set-pr-len.outputs.PRLEN  == 'true'
         uses: ./Code-Generation/actions/get-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
+      - name: set pr length output
+        id: set-pr-num
+        run: |
+          prnumoutput="${{ env.pr_number }}"
+          echo "PRNUMOUTPUT=$prnumoutput" >> $GITHUB_OUTPUT
+
+      - name: print PR
+        run: echo ${{ steps.set-pr-num.outputs.PRNUMOUTPUT }}
+
       - name: Create Pull Request
         id: create_pr
-        if: ${{ env.pr_list_length }} == '0' || ${{ env.pr_number }} == 'false'
+        if: steps.set-pr-len.outputs.PRLEN == '0' || steps.set-pr-num.outputs.PRNUMOUTPUT == 'false'
         run: |
           if ${{ steps.diff.outputs.has_changes }} == 'true'; then
                gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} PR Test" --body "PR TEST - Update Comment in PR" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
