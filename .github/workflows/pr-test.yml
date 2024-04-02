@@ -111,7 +111,7 @@ jobs:
       - name: Check if PR already exists
         id: check_pr
         run: |
-          echo "pr_exist=$(gh api "repos/${{ github.repository }}/pulls"" >> $GITHUB_OUTPUT
+          echo "pr_exist=$(gh api 'repos/${{ github.repository }}/pulls' " >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
