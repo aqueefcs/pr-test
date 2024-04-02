@@ -117,7 +117,8 @@ jobs:
 
       - name: get PR num
         id: get_pr
-        run: pr_array=${{ steps.check_pr.outputs.pr_exist }}
+        run: |
+          pr_array=${{ steps.check_pr.outputs.pr_exist }}
           echo ${#pr_array[@]}
           for element in "${pr_array[@]}"; do
           pr_num=$(echo $element | jq -r '.head.ref' )
