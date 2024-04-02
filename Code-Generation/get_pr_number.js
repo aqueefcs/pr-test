@@ -7,5 +7,5 @@ console.log(`Branch: ${branch_name}`);
 // console.log(`PR array: ${pr_array}`);
 
 for (item of pr_array) {
-  console.log(item);
+  console.log(item.head.ref);
 }
