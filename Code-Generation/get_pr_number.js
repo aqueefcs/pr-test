@@ -7,5 +7,5 @@ const pr_array = process.env.pr_array;
 // console.log(`PR array: ${pr_array}`);
 
 for (item of pr_array) {
-  console.log(item.head.ref);
+  console.log(item.head[ref]);
 }
