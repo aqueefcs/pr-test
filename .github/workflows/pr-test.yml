@@ -133,7 +133,7 @@ jobs:
         id: get_pr
         uses: ./Code-Generation/actions/get-pr-number
         with:
-          branch: ${{ needs.branch_check_and_create.outputs.branch-name }}
+          branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
       - name: print pr
