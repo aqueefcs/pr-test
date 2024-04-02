@@ -115,15 +115,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
-      # - name: Get Pr List Length
-      #   id: pr-length
-      #   run: |
-      #     pr_list=${{ steps.check_pr.outputs.pr_exist }}
-      #     echo ${#pr_array[@]}
-      #     echo "pr_length=${#pr_list[@]}" >> $GITHUB_OUTPUT
-
       - name: Get Pr List Length
         id: pr-length
+        if: steps.check_pr.outcome == 'success'
         uses: ./Code-Generation/actions/get-pr-list-length
         with:
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
@@ -142,29 +136,25 @@ jobs:
       #       fi
       #     done
 
-      - name: print pr length
-        run: |
-          echo ${{ env.pr_list_length }}
-
-      - name: get PR num
-        id: get_pr
-        if:
+      - name: Check if Any PR for Checkout Branch
+        id: pr_num
+        if: ${{ env.pr_list_length }} != '0'
         uses: ./Code-Generation/actions/get-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
-      # - name: Create Pull Request
-      #   id: create_pr
-      #   if: steps.check_pr.outputs.pr_exist == ''
-      #   run: |
-      #     if ${{ steps.diff.outputs.has_changes }} == 'true'; then
-      #          gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} PR Test" --body "PR TEST - Update Comment in PR" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
-      #     else
-      #          echo "No commits between main and ${{ needs.branch_check_and_create.outputs.branch-name }}"
-      #     fi
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      - name: Create Pull Request
+        id: create_pr
+        if: ${{ env.pr_list_length }} == '0' || ${{ env.pr_number }} == 'false'
+        run: |
+          if ${{ steps.diff.outputs.has_changes }} == 'true'; then
+               gh pr create --title "${{ needs.branch_check_and_create.outputs.branch-name }} PR Test" --body "PR TEST - Update Comment in PR" --base "main" --head "${{ needs.branch_check_and_create.outputs.branch-name }}"
+          else
+               echo "No commits between main and ${{ needs.branch_check_and_create.outputs.branch-name }}"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
       # - name: Get Pull Request Number
       #   id: get_pr_number
@@ -172,16 +162,24 @@ jobs:
       #   run: |
       #     echo ${{ steps.check_pr.outputs.pr_exist }}
 
-      # - name: Update Pull Request Comment
-      #   if: steps.check_pr.outputs.prexist != ''
-      #   uses: actions/github-script@v7
-      #   with:
-      #     github-token: ${{ secrets.GH_ACCESS_TOKEN }}
-      #     script: |
-      #       const newComment = 'New comment to append to the PR.';
-      #       github.rest.issues.createComment({
-      #           issue_number: ${{ steps.check_pr.outputs.pr_exist }},
-      #           owner: context.repo.owner,
-      #           repo: context.repo.repo,
-      #           body: newComment
-      #       });
+      - name: get PR num
+        id: get_pr_num
+        if: steps.create_pr.outcome == 'success'
+        uses: ./Code-Generation/actions/get-pr-number
+        with:
+          branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
+          pr_array: ${{ steps.check_pr.outputs.pr_exist }}
+
+      - name: Update Pull Request Comment
+        if: steps.get_pr_num.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
+          script: |
+            const newComment = 'New comment to append to the PR.';
+            github.rest.issues.createComment({
+                issue_number:  ${{ env.pr_number }}},
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: newComment
+            });
