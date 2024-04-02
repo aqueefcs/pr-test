@@ -122,8 +122,14 @@ jobs:
         with:
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
-      - name: print PR length
-        run: echo ${{ steps.pr-length.outputs.pr_list_length }}
+      - name: set pr length o output
+        id: set-pr-len
+        run: |
+          prlen="${{ env.pr_list_length }}"
+          echo "PRLEN=$prlen" >> $GITHUB_OUTPUT
+
+      - name: print PR
+        run: echo ${{ steps.set-pr-len.outputs.PRLEN }}
 
       # - name: get PR num
       #   id: get_pr
