@@ -147,7 +147,7 @@ jobs:
 
       - name: Check if Any PR for Checkout Branch
         id: pr_num
-        if: ${{ env.pr_list_length }} == 'true'
+        if: env.pr_list_length  == 'true'
         uses: ./Code-Generation/actions/get-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
