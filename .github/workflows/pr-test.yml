@@ -122,7 +122,7 @@ jobs:
         with:
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
-      - name: set pr length o output
+      - name: set pr length output
         id: set-pr-len
         run: |
           prlen="${{ env.pr_list_length }}"
