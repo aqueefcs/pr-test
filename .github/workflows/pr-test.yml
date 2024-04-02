@@ -115,23 +115,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
+      # - name: get PR num
+      #   id: get_pr
+      #   run: |
+      #     pr_array=${{ steps.check_pr.outputs.pr_exist }}
+      #     echo ${#pr_array[@]}
+      #     for element in $(echo ${pr_array} | jq -c '.[]'); do
+      #       pr_num=$(echo $element | jq -r '.head.ref' )
+      #       if $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }}; then
+      #         echo "pr_number=$(echo $element | jq -r '.number')" >> $GITHUB_OUTPUT
+      #       else
+      #         echo "pr_number='false'" >> $GITHUB_OUTPUT
+      #       fi
+      #     done
+
       - name: get PR num
         id: get_pr
-        run: |
-          pr_array=${{ steps.check_pr.outputs.pr_exist }}
-          echo ${#pr_array[@]}
-          for element in $(echo ${pr_array} | jq -c '.[]'); do
-            pr_num=$(echo $element | jq -r '.head.ref' )
-            if $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }}; then
-              echo "pr_number=$(echo $element | jq -r '.number')" >> $GITHUB_OUTPUT
-            else
-              echo "pr_number='false'" >> $GITHUB_OUTPUT
-            fi
-          done
+        env:
+          branch: ${{ needs.branch_check_and_create.outputs.branch-name }}
+          pr_array: ${{ steps.check_pr.outputs.pr_exist }}
+        uses: ./Code-Generation/actions/get-pr-number
 
       - name: print pr
         run: |
-          echo ${{ steps.get_pr.outputs.pr_number }}
+          echo ${{ steps.get_pr.outputs.PR_NUMBER }}
+
       # - name: Create Pull Request
       #   id: create_pr
       #   if: steps.check_pr.outputs.pr_exist == ''
