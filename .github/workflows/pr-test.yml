@@ -178,7 +178,7 @@ jobs:
           script: |
             const newComment = 'New comment to append to the PR.';
             github.rest.issues.createComment({
-                issue_number:  ${{ env.pr_number }}},
+                issue_number: ${{ env.pr_number }},
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: newComment
