@@ -108,12 +108,19 @@ jobs:
           git push origin HEAD:refs/heads/${{ needs.branch_check_and_create.outputs.branch-name }}
           echo "Pushed to Branch ${{ needs.branch_check_and_create.outputs.branch-name }}"
 
-      - name: Check if PR already exists
+      - name: Check for PR
         id: check_pr
         run: |
           echo "pr_exist=$(gh api "repos/${{ github.repository }}/pulls")" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Get Pr List Length
+        id: pr-length
+        run: |
+          pr_list = ${{ steps.check_pr.outputs.pr_exist }}
+          echo ${#pr_array[@]}
+          echo "pr_length=${#pr_list[@]}" >> $GITHUB_OUTPUT
 
       # - name: get PR num
       #   id: get_pr
@@ -129,16 +136,17 @@ jobs:
       #       fi
       #     done
 
+      - name: print pr length
+        run: |
+          echo ${{ steps.pr-length.outputs.pr_length }}
+
       - name: get PR num
         id: get_pr
+        if:
         uses: ./Code-Generation/actions/get-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           pr_array: ${{ steps.check_pr.outputs.pr_exist }}
-
-      - name: print pr
-        run: |
-          echo ${{ steps.get_pr.outputs.PR_NUMBER }}
 
       # - name: Create Pull Request
       #   id: create_pr
