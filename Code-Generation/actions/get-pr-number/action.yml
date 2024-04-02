@@ -20,5 +20,7 @@ runs:
         BRANCH: ${{ inputs.branch_name }}
         PR_ARRAY: ${{ inputs.pr_array }}
       run: |
-        echo "pr_number=$(node get_pr_number.js)" > $GITHUB_ENV
+        echo "pr_number<<EOF" >> $GITHUB_ENV
+        echo "$(node get_pr_number.js)" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
       working-directory: "${{ github.action_path }}"
