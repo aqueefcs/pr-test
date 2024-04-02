@@ -1,5 +1,6 @@
 require("dotenv/config");
 const core = require("@actions/core");
+const fs = require("fs");
 
 const branch = process.env.branch_name;
 const pr_array = JSON.parse(process.env.pr_array);

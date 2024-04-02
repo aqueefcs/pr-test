@@ -9,3 +9,4 @@ runs:
       shell: bash
       run: |
         node get_pr_number.js
+      working-directory: "${{ github.action_path }}"
