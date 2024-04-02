@@ -1,0 +1,11 @@
+name: Get PR Number
+description: "Get PR Number"
+runs:
+  using: composite
+
+  # Set the steps
+  steps:
+    - id: pr-num
+      shell: bash
+      run: |
+        node get_pr_number.js
