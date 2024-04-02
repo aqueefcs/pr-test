@@ -11,5 +11,7 @@ for (item of pr_array) {
   if (item.head.ref === branch) {
     console.log(item.head.ref);
     core.setOutput("PR_NUMBER", item.number);
+  } else {
+    core.setOutput("PR_NUMBER", "false");
   }
 }
