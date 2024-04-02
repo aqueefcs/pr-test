@@ -189,23 +189,26 @@ jobs:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
 
-      # - name: set pr length output
-      #   id: set-after-pr-num
-      #   run: |
-      #     afterprnumoutput="${{ env.pr_number }}"
-      #     echo "AFTERPRNUMOUTPUT<<EOF" >> $GITHUB_OUTPUT
-      #     echo "$afterprnumoutput" >> $GITHUB_OUTPUT
-      #     echo "EOF" >> $GITHUB_OUTPUT
+      - name: set pr length output
+        id: set-after-pr-num
+        run: |
+          afterprnumoutput="${{ env.pr_number }}"
+          echo "AFTERPRNUMOUTPUT<<EOF" >> $GITHUB_ENV
+          echo "$afterprnumoutput" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: print PR
+        run: echo ${{ env.AFTERPRNUMOUTPUT }}
 
       - name: Update Pull Request Comment
-        if: steps.after-pr-check.outcome == 'success'
+        if: steps.set-after-pr-num.outcome == 'success'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_ACCESS_TOKEN }}
           script: |
             const newComment = 'New comment to append to the PR.';
             github.rest.issues.createComment({
-                issue_number: ${{ env.pr_number }},
+                issue_number: ${{ env.AFTERPRNUMOUTPUT }},
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: newComment
