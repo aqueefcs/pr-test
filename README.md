@@ -1,2 +1,2 @@
 # pr-test
-testing for pr
+testing for pull request
