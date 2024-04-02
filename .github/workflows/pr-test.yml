@@ -197,8 +197,8 @@ jobs:
           echo "$afterprnumoutput" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: print PR
-        run: echo ${{ env.AFTERPRNUMOUTPUT }}
+      # - name: print PR
+      #   run: echo ${{ env.AFTERPRNUMOUTPUT }}
 
       - name: Update Pull Request Comment
         if: steps.get_pr_num.outcome == 'success'
