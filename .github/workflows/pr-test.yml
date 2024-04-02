@@ -156,13 +156,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
+      - name: Check for PR
+        id: after-pr-check
+        if: steps.create_pr.outcome == 'success'
+        run: |
+          echo "pr_exist=$(gh api "repos/${{ github.repository }}/pulls")" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
       - name: get PR num
         id: get_pr_num
         if: steps.create_pr.outcome == 'success'
         uses: ./Code-Generation/actions/get-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
-          pr_array: ${{ steps.check_pr.outputs.pr_exist }}
+          pr_array: ${{ steps.after-pr-check.outputs.pr_exist }}
+
+      - name: print PR
+        run: echo ${{ env.pr_number }}
 
       - name: Update Pull Request Comment
         if: steps.get_pr_num.outcome == 'success'
