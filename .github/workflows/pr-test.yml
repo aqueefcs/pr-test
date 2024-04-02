@@ -177,7 +177,7 @@ jobs:
       - name: Check for PR
         id: after-pr-check
         run: |
-          echo "pr_exist=$(gh api "repos/${{ github.repository }}/pulls")" >> $GITHUB_OUTPUT
+          echo "after_pr_exist=$(gh api "repos/${{ github.repository }}/pulls")" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
@@ -187,16 +187,16 @@ jobs:
         uses: ./Code-Generation/actions/get-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
-          pr_array: ${{ steps.after-pr-check.outputs.pr_exist }}
+          pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
 
-      - name: set pr number output
+      - name: set pr length output
         id: set-after-pr-num
         run: |
-          prnumoutput="${{ env.pr_number }}"
-          echo "PRNUMOUTPUT=$prnumoutput" >> $GITHUB_OUTPUT
+          afterprnumoutput="${{ env.pr_number }}"
+          echo "AFTERPRNUMOUTPUT=$afterprnumoutput" >> $GITHUB_OUTPUT
 
       - name: print PR
-        run: echo ${{ steps.set-after-pr-num.outputs.PRNUMOUTPUT }}
+        run: echo ${{ steps.set-after-pr-num.outputs.AFTERPRNUMOUTPUT }}
 
       - name: Update Pull Request Comment
         if: steps.set-after-pr-num.outcome == 'success'
@@ -206,7 +206,7 @@ jobs:
           script: |
             const newComment = 'New comment to append to the PR.';
             github.rest.issues.createComment({
-                issue_number: ${{ steps.set-after-pr-num.outputs.PRNUMOUTPUT }},
+                issue_number: ${{ steps.set-after-pr-num.outputs.AFTERPRNUMOUTPUT }},
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: newComment
