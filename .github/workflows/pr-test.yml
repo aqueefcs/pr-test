@@ -128,7 +128,7 @@ jobs:
           prlen="${{ env.pr_list_length }}"
           echo "PRLEN=$prlen" >> $GITHUB_OUTPUT
 
-      - name: print PR
+      - name: print PR len before
         run: echo ${{ steps.set-pr-len.outputs.PRLEN }}
 
       # - name: get PR num
@@ -159,7 +159,7 @@ jobs:
           prnumoutput="${{ env.pr_number }}"
           echo "PRNUMOUTPUT=$prnumoutput" >> $GITHUB_OUTPUT
 
-      - name: print PR
+      - name: print PR before
         run: echo ${{ steps.set-pr-num.outputs.PRNUMOUTPUT }}
 
       - name: Create Pull Request
@@ -174,28 +174,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
-      - name: Check for PR
+      - name: Check after PR
         id: after-pr-check
         run: |
           echo "after_pr_exist=$(gh api "repos/${{ github.repository }}/pulls")" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
-      - name: get PR num
+      - name: get PR num after PR
         id: get_pr_num
         if: steps.after-pr-check.outcome == 'success'
-        uses: ./Code-Generation/actions/get-pr-number
+        uses: ./Code-Generation/actions/get-after-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
-          pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
+          after_pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
 
       - name: set pr length output
         id: set-after-pr-num
         run: |
-          afterprnumoutput="${{ env.pr_number }}"
-          echo "AFTERPRNUMOUTPUT<<EOF" >> $GITHUB_ENV
-          echo "$afterprnumoutput" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          afterprnumoutput="${{ env.after_pr_number }}"
+          echo "AFTERPRNUMOUTPUT=$afterprnumoutput" >> $GITHUB_OUTPUT
 
       # - name: print PR
       #   run: echo ${{ env.AFTERPRNUMOUTPUT }}
@@ -208,7 +206,7 @@ jobs:
           script: |
             const newComment = 'New comment to append to the PR.';
             github.rest.issues.createComment({
-                issue_number: ${{ env.AFTERPRNUMOUTPUT }},
+                issue_number: ${{ steps.set-after-pr-num.outputs.AFTERPRNUMOUTPUT }},
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: newComment
