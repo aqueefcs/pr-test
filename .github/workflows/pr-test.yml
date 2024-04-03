@@ -193,9 +193,9 @@ jobs:
         id: set-after-pr-num
         run: |
           afterprnumoutput="${{ env.after_pr_number }}"
-          echo "AFTERPRNUMOUTPUT<<delimeter" >> $GITHUB_OUTPUT
-          echo "$afterprnumoutput" >> $GITHUB_OUTPUT
-          echo "delimeter" >> $GITHUB_OUTPUT
+          echo "AFTERPRNUMOUTPUT<<delimeter" > $GITHUB_OUTPUT
+          echo "$afterprnumoutput" > $GITHUB_OUTPUT
+          echo "delimeter" > $GITHUB_OUTPUT
 
       # - name: print PR
       #   run: echo ${{ env.AFTERPRNUMOUTPUT }}
