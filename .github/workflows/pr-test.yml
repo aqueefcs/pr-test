@@ -174,11 +174,9 @@ jobs:
           for element in "${pr_array[@]}"; do
             pr_num=$(echo "$element" | sed 's/.*"head":{"ref":"\([^"]*\)".*/\1/')
             if [[ $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }} ]]; then
-              echo $pr_num;
               echo "after_pr_number=$pr_num" >> $GITHUB_OUTPUT
               break
             else
-              $pr_num
               echo "after_pr_number='false'" >> $GITHUB_OUTPUT
             fi
           done
