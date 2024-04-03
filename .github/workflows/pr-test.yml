@@ -178,7 +178,7 @@ jobs:
       - name: set pr num output
         id: set-after-pr-num
         run: |
-          afterprnumoutput="${{ env.after_pr_number }}"
+          afterprnumoutput="${{ env.pr_number }}"
           echo "AFTERPRNUMOUTPUT=$afterprnumoutput" >> $GITHUB_OUTPUT
 
       - name: print PR
