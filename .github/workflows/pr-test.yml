@@ -131,20 +131,6 @@ jobs:
       - name: print PR len before
         run: echo ${{ steps.set-pr-len.outputs.PRLEN }}
 
-      # - name: get PR num
-      #   id: get_pr
-      #   run: |
-      #     pr_array=${{ steps.check_pr.outputs.pr_exist }}
-      #     echo ${#pr_array[@]}
-      #     for element in $(echo ${pr_array} | jq -c '.[]'); do
-      #       pr_num=$(echo $element | jq -r '.head.ref' )
-      #       if $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }}; then
-      #         echo "pr_number=$(echo $element | jq -r '.number')" >> $GITHUB_OUTPUT
-      #       else
-      #         echo "pr_number='false'" >> $GITHUB_OUTPUT
-      #       fi
-      #     done
-
       - name: Check if Any PR for Checkout Branch
         id: pr_num
         if: steps.set-pr-len.outputs.PRLEN  == 'true'
@@ -184,11 +170,12 @@ jobs:
       - name: get PR num
         id: get_pr
         run: |
-          pr_array=($(echo "${{ steps.after-pr-check.outputs.after_pr_exist }}" | sed 's/[][,]/ /g'))
+          pr_array=($(echo "${{ steps.after-pr-check.outputs.after_pr_exist }}" | sed 's/[][]/ /g'))
           for element in "${pr_array[@]}"; do
             pr_num=$(echo "$element" | sed 's/.*"ref":"\([^"]*\)".*/\1/')
             if [[ $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }} ]]; then
               echo "pr_number=$pr_num" >> $GITHUB_OUTPUT
+              break
             else
               echo "pr_number='false'" >> $GITHUB_OUTPUT
             fi
