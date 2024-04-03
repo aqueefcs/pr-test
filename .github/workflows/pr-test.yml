@@ -170,16 +170,11 @@ jobs:
       - name: get PR num
         id: get_pr
         run: |
-          pr_array=($(echo "${{ steps.after-pr-check.outputs.after_pr_exist }}" | sed 's/[][]/ /g'))
-          for element in "${pr_array[@]}"; do
-            pr_num=$(echo "$element" | sed 's/.*"head":{"ref":"\([^"]*\)".*/\1/')
-            if [[ $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }} ]]; then
-              echo "after_pr_number=$pr_num" >> $GITHUB_OUTPUT
-              break
-            else
-              echo "after_pr_number='false'" >> $GITHUB_OUTPUT
-            fi
-          done
+          cd ./Code-Generation
+          echo "after_pr_number=$(node after_pr_number.js)" >> $GITHUB_OUTPUT
+        env:
+          branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
+          pr_array: ${{ steps.check_pr.outputs.pr_exist }}
 
       # - name: get PR num after PR
       #   id: get_pr_num
@@ -196,7 +191,7 @@ jobs:
       #     echo "AFTERPRNUMOUTPUT=$afterprnumoutput" >> $GITHUB_OUTPUT
 
       - name: print PR
-        run: echo ${{ steps.get_pr.outputs.pr_number }}
+        run: echo ${{ steps.get_pr.outputs.after_pr_number }}
 
       # - name: Update Pull Request Comment
       #   if: steps.get_pr_num.outcome == 'success'
