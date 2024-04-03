@@ -184,8 +184,9 @@ jobs:
       - name: get PR num
         id: get_pr
         run: |
-          pr_array=${{ steps.after-pr-check.outputs.after_pr_exist }}
-          for element in $(echo "${pr_array}" | jq -c '.[]'); do
+          pr_array="${{ steps.after-pr-check.outputs.after_pr_exist }}"
+          readarray -t pr_array <<< "$(echo "$pr_array" | jq -r '.[]')"
+          for element in "${pr_array[@]}"; do
             echo "Hi"
             pr_num=$(echo "${element}" | jq -r '.head.ref' )
             if [[$pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }}]]; then
