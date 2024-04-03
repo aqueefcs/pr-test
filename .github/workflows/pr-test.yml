@@ -92,6 +92,11 @@ jobs:
       - name: Check Diff
         id: diff
         run: |
+          git diff
+
+      - name: Check Diff
+        id: diff
+        run: |
           echo "has_changes=$(git diff --quiet || echo 'true')" >> $GITHUB_OUTPUT
 
       - name: Check diff output
