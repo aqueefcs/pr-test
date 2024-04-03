@@ -167,22 +167,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
-      - name: get PR num
-        id: get_pr
-        run: |
-          cd ./Code-Generation
-          echo "after_pr_number=$(node after_pr_number.js)" >> $GITHUB_OUTPUT
-        env:
+      - name: get PR num after PR
+        id: get_pr_num
+        if: steps.after-pr-check.outcome == 'success'
+        uses: ./Code-Generation/actions/get-after-pr-number
+        with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           after_pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
-
-      # - name: get PR num after PR
-      #   id: get_pr_num
-      #   if: steps.after-pr-check.outcome == 'success'
-      #   uses: ./Code-Generation/actions/get-after-pr-number
-      #   with:
-      #     branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
-      #     after_pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
 
       # - name: set pr length output
       #   id: set-after-pr-num
@@ -191,18 +182,18 @@ jobs:
       #     echo "AFTERPRNUMOUTPUT=$afterprnumoutput" >> $GITHUB_OUTPUT
 
       - name: print PR
-        run: echo ${{ steps.get_pr.outputs.after_pr_number }}
+        run: echo ${{ steps.get_pr_num.outputs.after_pr_number }}
 
-      # - name: Update Pull Request Comment
-      #   if: steps.get_pr_num.outcome == 'success'
-      #   uses: actions/github-script@v7
-      #   with:
-      #     github-token: ${{ secrets.GH_ACCESS_TOKEN }}
-      #     script: |
-      #       const newComment = 'New comment to append to the PR.';
-      #       github.rest.issues.createComment({
-      #           issue_number: ${{ steps.get_pr_num.outputs.after_pr_number }},
-      #           owner: context.repo.owner,
-      #           repo: context.repo.repo,
-      #           body: newComment
-      #       });
+      - name: Update Pull Request Comment
+        if: steps.get_pr_num.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_ACCESS_TOKEN }}
+          script: |
+            const newComment = 'New comment to append to the PR.';
+            github.rest.issues.createComment({
+                issue_number: ${{ steps.get_pr_num.outputs.after_pr_number }},
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: newComment
+            });
