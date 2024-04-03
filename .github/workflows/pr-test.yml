@@ -185,9 +185,8 @@ jobs:
         id: get_pr
         run: |
           pr_array=${{ steps.after-pr-check.outputs.after_pr_exist }}
-          echo ${#pr_array[@]}
           for element in $(echo "${pr_array}" | jq -c '.[]'); do
-            pr_num=$(echo "{$element}" | jq -r '.head.ref' )
+            pr_num=$(echo "${element}" | jq -r '.head.ref' )
             if $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }}; then
               echo "pr_number=$(echo $element | jq -r '.number')" >> $GITHUB_OUTPUT
             else
