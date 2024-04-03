@@ -189,14 +189,14 @@ jobs:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           after_pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
 
-      - name: set pr length output
-        id: set-after-pr-num
-        run: |
-          afterprnumoutput="${{ env.after_pr_number }}"
-          echo "AFTERPRNUMOUTPUT=$afterprnumoutput" >> $GITHUB_OUTPUT
+      # - name: set pr length output
+      #   id: set-after-pr-num
+      #   run: |
+      #     afterprnumoutput="${{ steps.get_pr_num.outputs.after_pr_number }}"
+      #     echo "AFTERPRNUMOUTPUT=$afterprnumoutput" >> $GITHUB_OUTPUT
 
-      # - name: print PR
-      #   run: echo ${{ env.AFTERPRNUMOUTPUT }}
+      - name: print PR
+        run: echo ${{ steps.get_pr_num.outputs.after_pr_number }}
 
       - name: Update Pull Request Comment
         if: steps.get_pr_num.outcome == 'success'
@@ -206,7 +206,7 @@ jobs:
           script: |
             const newComment = 'New comment to append to the PR.';
             github.rest.issues.createComment({
-                issue_number: ${{ steps.set-after-pr-num.outputs.AFTERPRNUMOUTPUT }},
+                issue_number: ${{ steps.get_pr_num.outputs.after_pr_number }},
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: newComment
