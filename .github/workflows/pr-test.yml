@@ -170,10 +170,10 @@ jobs:
       - name: get PR num after PR
         id: get_pr_num
         if: steps.after-pr-check.outcome == 'success'
-        uses: ./Code-Generation/actions/get-after-pr-number
+        uses: ./Code-Generation/actions/get-pr-number
         with:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
-          after_pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
+          pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
 
       - name: set pr num output
         id: set-after-pr-num
