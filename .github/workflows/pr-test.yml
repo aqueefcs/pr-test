@@ -171,8 +171,7 @@ jobs:
         id: get_pr
         run: |
           cd ./Code-Generation
-          node after_pr_number.js
-          # echo "after_pr_number=$(node after_pr_number.js)" >> $GITHUB_OUTPUT
+          echo "after_pr_number=$(node after_pr_number.js)" >> $GITHUB_OUTPUT
         env:
           branch_name: ${{ needs.branch_check_and_create.outputs.branch-name }}
           after_pr_array: ${{ steps.after-pr-check.outputs.after_pr_exist }}
