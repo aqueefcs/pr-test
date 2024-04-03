@@ -172,7 +172,7 @@ jobs:
         run: |
           pr_array=($(echo "${{ steps.after-pr-check.outputs.after_pr_exist }}" | sed 's/[][]/ /g'))
           for element in "${pr_array[@]}"; do
-            pr_num=$(echo "$element" | sed 's/.*"ref":"\([^"]*\)".*/\1/')
+            pr_num=$(echo "$element" | sed 's/.*"head":{"ref":"\([^"]*\)".*/\1/')
             if [[ $pr_num == ${{ needs.branch_check_and_create.outputs.branch-name }} ]]; then
               echo $pr_num;
               echo "after_pr_number=$pr_num" >> $GITHUB_OUTPUT
