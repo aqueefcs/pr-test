@@ -184,7 +184,7 @@ jobs:
       - name: get PR num
         id: get_pr
         run: |
-          pr_array=( $( echo "${{ steps.after-pr-check.outputs.after_pr_exist }}" | sed 's/[][,]/ /g') )
+          pr_array=$(echo "${{ steps.after-pr-check.outputs.after_pr_exist }}" | sed 's/[][,]/ /g')
           for element in "${pr_array[@]}"; do
             echo "Hi"
             pr_num=$(echo "${element}" | jq -r '.head.ref' )
