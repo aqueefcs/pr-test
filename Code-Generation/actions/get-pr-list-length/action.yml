@@ -1,11 +1,6 @@
 name: Get PR List Length
 description: "Get PR List Length"
 
-inputs:
-  pr_array:
-    description: "List of PRs"
-    required: true
-
 runs:
   using: composite
 
@@ -13,8 +8,6 @@ runs:
   steps:
     - id: pr-list-len
       shell: bash
-      env:
-        PR_ARRAY: ${{ inputs.pr_array }}
       run: |
         echo "pr_list_length<<EOF" >> $GITHUB_ENV
         echo "$(node get_length.js)" >> $GITHUB_ENV
